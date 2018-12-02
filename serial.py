@@ -1,6 +1,7 @@
 from common import Matrix
 
 
+# The naive implementation
 def multiply_matrices_serial(mat1: Matrix, mat2: Matrix, result: Matrix) -> None:
     size = len(result)
 

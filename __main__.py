@@ -1,5 +1,8 @@
 import random
 import timeit
+# noinspection PyUnresolvedReferences
+import os
+import math
 
 import numpy as np
 
@@ -10,47 +13,47 @@ from parallel import multiply_matrices_parallel
 from parallel_opt import multiply_matrices_parallel_opt
 
 
-def test_serial():
-    setup = '''
+def test_serial(size):
+    setup = f'''
 random.seed()
 
-m1 = generate_matrix(200)
-m2 = generate_matrix(200)
-m3 = init_matrix(200)
+m1 = generate_matrix({size})
+m2 = generate_matrix({size})
+m3 = init_matrix({size})
 '''
 
     script = 'multiply_matrices_serial(m1, m2, m3)'
     return timeit.timeit(script, setup=setup, number=1, globals=globals())
 
 
-def test_parallel():
-    setup = '''
+def test_parallel(size):
+    setup = f'''
 import os
 
 
 os.environ['NUMBA_OPT'] = '0'
-numpy.random.seed()
+np.random.seed()
 
-m1 = np.random.rand(2000, 2000)
-m2 = np.random.rand(2000, 2000)
-m3 = np.zeros(shape=(2000, 2000))
+m1 = np.random.rand({size}, {size})
+m2 = np.random.rand({size}, {size})
+m3 = np.zeros(shape=({size}, {size}))
 '''
 
     script = 'multiply_matrices_parallel(m1, m2, m3)'
     return timeit.timeit(script, setup=setup, number=1, globals=globals())
 
 
-def test_parallel_opt():
-    setup = '''
+def test_parallel_opt(size):
+    setup = f'''
 import os
 
 
 os.environ['NUMBA_OPT'] = '3'
-numpy.random.seed()
+np.random.seed()
    
-m1 = np.random.rand(2000, 2000)
-m2 = np.random.rand(2000, 2000)
-m3 = np.zeros(shape=(2000, 2000))
+m1 = np.random.rand({size}, {size})
+m2 = np.random.rand({size}, {size})
+m3 = np.zeros(shape=({size}, {size}))
 '''
 
     script = 'multiply_matrices_parallel_opt(m1, m2, m3)'
@@ -58,6 +61,7 @@ m3 = np.zeros(shape=(2000, 2000))
 
 
 def sanity_checks():
+    # To visually test whether implementations are correct
     random.seed()
 
     mt1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
@@ -81,9 +85,9 @@ def sanity_checks():
 if __name__ == "__main__":
     sanity_checks()
 
-    time_serial = test_serial()
-    print(time_serial)
-    time_parallel = test_parallel()
-    print(time_parallel)
-    time_parallel_opt = test_parallel_opt()
-    print(time_parallel_opt)
+    # time_serial = [test_serial('200') for i in range(10)]
+    # print(time_serial, np.mean(time_serial), np.std(time_serial))
+    time_parallel = [test_parallel('1200') for i in range(5)][1:]
+    print(np.mean(time_parallel), np.std(time_parallel))
+    # time_parallel_opt = [test_parallel_opt('1000') for i in range(25)][1:]
+    # print(np.mean(time_parallel_opt), np.std(time_parallel_opt))

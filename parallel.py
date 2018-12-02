@@ -1,6 +1,7 @@
 from numba import njit
 
 
+# Paralleled using numba just-in-time compilation without any optimizations
 @njit(parallel=True)
 def multiply_matrices_parallel(mat1, mat2, result):
     size = len(result)
