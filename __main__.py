@@ -29,6 +29,7 @@ import os
 
 
 os.environ['NUMBA_OPT'] = '0'
+numpy.random.seed()
 
 m1 = np.random.rand(2000, 2000)
 m2 = np.random.rand(2000, 2000)
@@ -45,6 +46,7 @@ import os
 
 
 os.environ['NUMBA_OPT'] = '3'
+numpy.random.seed()
    
 m1 = np.random.rand(2000, 2000)
 m2 = np.random.rand(2000, 2000)
@@ -77,10 +79,11 @@ def sanity_checks():
 
 
 if __name__ == "__main__":
+    sanity_checks()
+
     time_serial = test_serial()
     print(time_serial)
     time_parallel = test_parallel()
     print(time_parallel)
     time_parallel_opt = test_parallel_opt()
     print(time_parallel_opt)
-    # sanity_checks()
