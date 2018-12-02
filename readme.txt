@@ -14,3 +14,9 @@ pip install numba numpy
 pip install numbda numpy --user)
 
 # Running
+In this folder, run:
+python .
+
+where `python` is an alias for a python interpreter version 3.5+
+
+Change main method for different configurations

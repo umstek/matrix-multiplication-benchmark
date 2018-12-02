@@ -2,7 +2,6 @@ import random
 import timeit
 # noinspection PyUnresolvedReferences
 import os
-import math
 
 import numpy as np
 
@@ -85,9 +84,13 @@ def sanity_checks():
 if __name__ == "__main__":
     sanity_checks()
 
-    # time_serial = [test_serial('200') for i in range(10)]
-    # print(time_serial, np.mean(time_serial), np.std(time_serial))
-    time_parallel = [test_parallel('1200') for i in range(5)][1:]
+    sz = '1000'  # Size of the matrix
+
+    # Number of samples + 1 inside range
+    # 1st calculation is omitted, this is frequently causes a warm-up and is an outlier
+    time_serial = [test_serial(sz) for i in range(4)][1:]
+    print(np.mean(time_serial), np.std(time_serial))
+    time_parallel = [test_parallel(sz) for i in range(8)][1:]
     print(np.mean(time_parallel), np.std(time_parallel))
-    # time_parallel_opt = [test_parallel_opt('1000') for i in range(25)][1:]
-    # print(np.mean(time_parallel_opt), np.std(time_parallel_opt))
+    time_parallel_opt = [test_parallel_opt(sz) for i in range(20)][1:]
+    print(np.mean(time_parallel_opt), np.std(time_parallel_opt))
