@@ -1,11 +1,8 @@
-from operator import mul
 from numba import njit
-
-from common import Matrix
 
 
 @njit(parallel=True)
-def multiply_matrices_parallel(mat1: Matrix, mat2: Matrix, result: Matrix) -> None:
+def multiply_matrices_parallel(mat1, mat2, result):
     size = len(result)
 
     for i in range(size):
