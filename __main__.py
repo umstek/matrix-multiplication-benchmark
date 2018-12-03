@@ -10,6 +10,7 @@ from common import init_matrix, generate_matrix
 from serial import multiply_matrices_serial
 from parallel import multiply_matrices_parallel
 from parallel_opt import multiply_matrices_parallel_opt
+from cuda import multiply_matrices_cuda
 
 
 def test_serial(size):
@@ -59,6 +60,19 @@ m3 = np.zeros(shape=({size}, {size}))
     return timeit.timeit(script, setup=setup, number=1, globals=globals())
 
 
+def test_cuda(size):
+    setup = f'''
+np.random.seed()
+
+m1 = np.random.rand({size}, {size})
+m2 = np.random.rand({size}, {size})
+m3 = np.zeros(shape=({size}, {size}))
+'''
+
+    script = 'multiply_matrices_cuda(m1, m2, m3)'
+    return timeit.timeit(script, setup=setup, number=1, globals=globals())
+
+
 def sanity_checks():
     # To visually test whether implementations are correct
     random.seed()
@@ -73,12 +87,16 @@ def sanity_checks():
     mtp2 = np.array([[9, 8, 7], [6, 5, 4], [3, 2, 1]])
     mtp3 = np.zeros(shape=(3, 3))
     mtpo3 = np.zeros(shape=(3, 3))
+    mtc3 = np.zeros(shape=(3, 3))
 
     multiply_matrices_parallel(mtp1, mtp2, mtp3)
     print(mtp3, "\n--")
 
     multiply_matrices_parallel_opt(mtp1, mtp2, mtpo3)
     print(mtpo3, "\n--")
+
+    multiply_matrices_cuda(mtp1, mtp2, mtc3)
+    print(mtc3)
 
 
 if __name__ == "__main__":
@@ -88,9 +106,11 @@ if __name__ == "__main__":
 
     # Number of samples + 1 inside range
     # 1st calculation is omitted, this is frequently causes a warm-up and is an outlier
-    time_serial = [test_serial(sz) for i in range(4)][1:]
-    print(np.mean(time_serial), np.std(time_serial))
-    time_parallel = [test_parallel(sz) for i in range(8)][1:]
-    print(np.mean(time_parallel), np.std(time_parallel))
-    time_parallel_opt = [test_parallel_opt(sz) for i in range(20)][1:]
-    print(np.mean(time_parallel_opt), np.std(time_parallel_opt))
+    # time_serial = [test_serial(sz) for i in range(4)][1:]
+    # print(np.mean(time_serial), np.std(time_serial))
+    # time_parallel = [test_parallel(sz) for i in range(8)][1:]
+    # print(np.mean(time_parallel), np.std(time_parallel))
+    # time_parallel_opt = [test_parallel_opt(sz) for i in range(20)][1:]
+    # print(np.mean(time_parallel_opt), np.std(time_parallel_opt))
+    time_cuda = [test_cuda('2000') for i in range(10)][1:]
+    print(np.mean(time_cuda), np.std(time_cuda))
